@@ -1,4 +1,4 @@
-(ns examples.rack-example
+(ns examples.rack.rack-example
   (:require [puppetlabs.trapperkeeper.core :refer [defservice]]
             [clojure.tools.logging :as log]))
 

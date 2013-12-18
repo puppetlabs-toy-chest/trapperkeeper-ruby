@@ -1,4 +1,4 @@
-(ns examples.counter.count-service-java-bridge
+(ns examples.rack.counter.count-service-java-bridge
   (:import [examples.counter CountService])
   (:require [puppetlabs.trapperkeeper.core :refer [defservice]]
             [clojure.tools.logging :as log]))

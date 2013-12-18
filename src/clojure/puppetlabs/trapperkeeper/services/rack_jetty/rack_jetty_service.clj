@@ -1,6 +1,6 @@
-(ns rack-jetty.rack-jetty-service
+(ns puppetlabs.trapperkeeper.services.rack-jetty.rack-jetty-service
   (:require
-    [rack-jetty.rack-jetty-core :as core]
+    [puppetlabs.trapperkeeper.services.rack-jetty.rack-jetty-core :as core]
     [puppetlabs.trapperkeeper.services.jetty.jetty-core :as jetty-core]
     [puppetlabs.trapperkeeper.core :refer [defservice]]))
 

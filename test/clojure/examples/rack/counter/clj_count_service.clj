@@ -1,4 +1,4 @@
-(ns examples.counter.clj-count-service
+(ns examples.rack.counter.clj-count-service
   (:require [puppetlabs.trapperkeeper.core :refer [defservice]]
             [clojure.tools.logging :as log]))
 
