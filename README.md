@@ -24,13 +24,13 @@ that function and point it at the `config.ru` for your rack application.
 The one caveat is that you need to bundle all of the gems that your app depends
 on so that they can be included in the jar.  More info on this a bit later.
 
-The service is defined in `src/clojure/rack_jetty/rack_jetty_service.clj`.
+The service is defined in `src/clojure/puppetlabs/trapperkeeper/services/rack_jetty_service.clj`.
 
-You can find an example sinatra app in `test/clojure/examples/rack_example.clj` and
+You can find an example sinatra app in `test/clojure/examples/rack/rack_example.clj` and
 `test/ruby/hello-sinatra`.  To run the code:
 
-    lein trampoline run --bootstrap-config ./test/clojure/examples/bootstrap.cfg \
-                        --config ./test/clojure/examples/config.ini
+    lein trampoline run --bootstrap-config ./test/clojure/examples/rack/bootstrap.cfg \
+                        --config ./test/clojure/examples/rack/config.ini
 
 The `rack-webserver-service` could be useful in production and could be brought
 up to production quality without too much effort.
@@ -54,5 +54,5 @@ that difficult.  The basic steps:
 For a simple example of this, see the following files:
 
     test/ruby/sinatra-service-consumer/sinatra-consumer.rb
-    test/clojure/examples/counter/count_service_java_bridge.clj
-    test/java/examples/counter/CountService.java
+    test/clojure/examples/rack/counter/count_service_java_bridge.clj
+    test/java/examples/rack/counter/CountService.java

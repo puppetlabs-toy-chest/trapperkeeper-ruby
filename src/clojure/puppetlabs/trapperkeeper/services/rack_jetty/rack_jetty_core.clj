@@ -2,7 +2,7 @@
 ;;  It adds some SSL utility functions, and
 ;;  provides the ability to dynamically register ring handlers.
 
-(ns rack-jetty.rack-jetty-core
+(ns puppetlabs.trapperkeeper.services.rack-jetty.rack-jetty-core
   "Adapter for the Rack Jetty webserver."
   (:import (org.eclipse.jetty.servlet ServletContextHandler ServletHolder
                                       DefaultServlet)
