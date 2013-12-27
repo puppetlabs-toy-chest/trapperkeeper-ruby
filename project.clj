@@ -10,7 +10,15 @@
                  [org.eclipse.jetty/jetty-servlet "7.6.1.v20120215"]
                  [org.clojure/tools.logging "0.2.6"]
                  [prismatic/plumbing "0.1.0"]
-                 [org.jruby/jruby "1.7.9" :exclusions [com.github.jnr/jffi com.github.jnr/jnr-x86asm]]
+                 ;; we are excluding some of the transitive jnr dependencies because they use
+                 ;; version ranges, and lein doesn't like that, and we don't need them.
+                 ;; we are excluding joni because jruby 1.7.9 has a dependency on a SNAPSHOT
+                 ;; version of joni that doesn't exist anymore, and there is a released version
+                 ;; available now.
+                 [org.jruby/jruby "1.7.9" :exclusions [com.github.jnr/jffi com.github.jnr/jnr-x86asm org.jruby.joni/joni]]
+                 ;; here we add back in the dependency on the non-SNAPSHOT version of joni.  We
+                 ;; exclude jcodings because jruby already has a dependency on a newer version of it.
+                 [org.jruby.joni/joni "2.1.1" :exclusions [org.jruby.jcodings/jcodings]]
                  [org.jruby.rack/jruby-rack "1.1.13.3" :exclusions [org.jruby/jruby-complete]]
                  [puppetlabs/trapperkeeper "0.1.0-SNAPSHOT"]]
 
