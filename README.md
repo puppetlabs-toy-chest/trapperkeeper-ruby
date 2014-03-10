@@ -14,7 +14,7 @@ inside of trapperkeeper.  This includes:
 * Calling a clojure function provided by another service from a ruby-based
   service
 
-== Running a Rack application from inside of trapperkeeper
+## Running a Rack application from inside of trapperkeeper
 
 Provided in this project is a trapperkeeper service called `rack-webserver-service`.
 It provides the same API as the built-in trapperkeeper `webserver-service`, with
@@ -35,7 +35,7 @@ You can find an example sinatra app in `test/clojure/examples/rack/rack_example.
 The `rack-webserver-service` could be useful in production and could be brought
 up to production quality without too much effort.
 
-== Using a ruby library to provide a trapperkeeper service
+### Using a ruby library to provide a trapperkeeper service
 
 There is an example of using Ruby code to provide a trapperkeeper service in
 `test/clojure/examples/ruby_provider/ruby_provider_example.clj`.  It includes
@@ -48,7 +48,7 @@ approach for resolving them is to use bundler to install the gems into
 the source tree so that they can be packaged directly in the jar file.  For
 more information, see the section on gems below.
 
-== Calling a clojure function provided by a trapperkeeper service from a rack app
+### Calling a clojure function provided by a trapperkeeper service from a rack app
 
 This involves a bit more interop than I'm really proud of, so I'm not sure whether
 it's wise to do in production... but it turns out to be possible, and not all
