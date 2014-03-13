@@ -1,24 +1,16 @@
-;; NOTE: this code is an adaptation of ring-jetty-handler.
-;;  It adds some SSL utility functions, and
-;;  provides the ability to dynamically register ring handlers.
+(ns puppetlabs.trapperkeeper.services.rack-webserver.rack-webserver-core
+  (:import (javax.servlet ServletContext)
+           (org.jruby.rack RackFilter)))
 
-(ns puppetlabs.trapperkeeper.services.rack-jetty.rack-jetty-core
-  "Adapter for the Rack Jetty webserver."
-  (:import (org.eclipse.jetty.servlet ServletContextHandler ServletHolder
-                                      DefaultServlet)
-           (org.jruby.rack RackFilter RackServletContextListener)
-           (org.eclipse.jetty.util.resource Resource))
-  (:require [clojure.java.io :refer [file]]))
-
-(defn add-rack-handler
-  [webserver rack-path context-path]
-  (let [handlers  (:handlers webserver)
-        h         (ServletContextHandler. nil context-path ServletContextHandler/NO_SESSIONS)]
-    (doto h
-      (.addFilter RackFilter "/*" 0)
-      (.setBaseResource (Resource/newResource (file rack-path)))
-      (.addEventListener (RackServletContextListener.))
-
+(defn initialize-rack-servlet-context
+  "Customize a ServletContext to be able to serve a rack application."
+  [servlet-context base-path]
+  {:pre [(instance? ServletContext servlet-context)
+         (string? base-path)]}
+  (let [rackup-path (str base-path "/config.ru")]
+    (doto (.addFilter servlet-context "rack" RackFilter)
+      (.addMappingForUrlPatterns nil true (into-array ["/*"])))
+    (doto servlet-context
       ;; TODO: some of this initialization logic would need improvement before
       ;; this code should be used in production.  See comments inline in the
       ;; following stanza.
@@ -31,16 +23,20 @@
       ;; work.
       (.setInitParameter
         "rackup"
-        ;; first we add the rack-path to ruby's LOAD_PATH so that the application
+        ;; first we add the base-path to ruby's LOAD_PATH so that the application
         ;; code can be found.
-        (str "$LOAD_PATH.unshift(\"" rack-path "\")\n"
+        (str "$LOAD_PATH.unshift('" base-path "')\n"
              ;; then we do a 'require' on the setup script that is generated
              ;; by `bundler --standalone`; this has the effect of making sure
              ;; that all of the gems that we installed into the source tree
              ;; via bundler are accessible to the application.
-             "require '" rack-path "/bundle/setup.rb'\n"
-             ;; and finally, we slurp in the "real" config.ru.
-             (slurp (file rack-path "config.ru"))))
+             "require 'bundler/setup'\n"
+             ;; and finally, we evalute the "real" config.ru; note that we
+             ;; can't just do a 'require' or 'load' on it, as it needs to be
+             ;; evaluated in the current context, yet we need to ensure
+             ;; that the __FILE__ points to the real location of the config.ru
+             ;; file during its evaluation
+             "eval File.read('" rackup-path "'), binding, '" rackup-path "'\n"))
       ;; This should probably be configurable; see jruby-rack documentation
       (.setInitParameter "jruby.max.runtimes" "1")
 
@@ -69,10 +65,4 @@
       ;; but we don't need it because we're using the bundler/setup.rb approach
       ;; above.
       ;(.setInitParameter "gem.path" "gems/jruby/1.9/gems")
-
-
-      (.addServlet (ServletHolder. (DefaultServlet.)) "/"))
-
-    (.addHandler handlers h)
-    (.start h)
-    h))
+      )))
