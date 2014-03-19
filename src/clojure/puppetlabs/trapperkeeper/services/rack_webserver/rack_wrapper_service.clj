@@ -1,6 +1,5 @@
 (ns puppetlabs.trapperkeeper.services.rack-webserver.rack-wrapper-service
-  (:import (clojure.lang RT)
-           (javax.servlet ServletContextListener)
+  (:import (javax.servlet ServletContextListener)
            (org.jruby.rack RackServletContextListener))
   (:require
     [puppetlabs.trapperkeeper.services.rack-webserver.rack-webserver-core :as core]
@@ -19,7 +18,7 @@
   [[:WebserverService add-context-handler]]
 
   (add-rack-handler [this rack-path context-path]
-                    (let [base-path (.getPath (resource rack-path (RT/baseLoader)))]
+                    (let [base-path (core/get-base-path (resource rack-path))]
                       (add-context-handler base-path context-path
                                            [(reify ServletContextListener
                                               (contextInitialized [this event]

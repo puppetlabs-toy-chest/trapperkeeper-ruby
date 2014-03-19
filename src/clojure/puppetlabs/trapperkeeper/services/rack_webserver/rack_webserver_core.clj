@@ -1,6 +1,21 @@
 (ns puppetlabs.trapperkeeper.services.rack-webserver.rack-webserver-core
-  (:import (javax.servlet ServletContext)
+  (:import (java.io File)
+           (java.net URL URI URISyntaxException)
+           (javax.servlet ServletContext)
            (org.jruby.rack RackFilter)))
+
+(defn get-base-path
+  "Convert a URL to its string representation
+  (special case 'file:' URLs converting them to local file paths)"
+  [url]
+  {:pre [(instance? URL url)]}
+  (let [url-string (.toString url)]
+    (try
+      (.toString (File. (URI. url-string)))
+      (catch URISyntaxException _
+        url-string)
+      (catch IllegalArgumentException _
+        url-string))))
 
 (defn initialize-rack-servlet-context
   "Customize a ServletContext to be able to serve a rack application."
@@ -65,4 +80,6 @@
       ;; but we don't need it because we're using the bundler/setup.rb approach
       ;; above.
       ;(.setInitParameter "gem.path" "gems/jruby/1.9/gems")
-      )))
+
+      ;; This tells the jruby-rack that the application uses standard layout.
+      (.setInitParameter "jruby.rack.layout_class" "::JRuby::Rack::FileSystemLayout"))))
