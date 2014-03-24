@@ -16,15 +16,17 @@ inside of trapperkeeper.  This includes:
 
 ## Running a Rack application from inside of trapperkeeper
 
-Provided in this project is a trapperkeeper service called `rack-webserver-service`.
-It provides the same API as the built-in trapperkeeper `webserver-service`, with
-one additional function called `add-rack-handler`.  To use it, you simply call
-that function and point it at the `config.ru` for your rack application.
+Provided in this project is a trapperkeeper service called `rack-wrapper-service`.
+It provides just one function called `add-rack-handler`. This function internally
+delegates to the `add-context-handler` function defined in the WebserverService
+protocol. To use it, you simply call that function and point it at the folder
+containing the `config.ru` for your rack application.
 
 The one caveat is that you need to bundle all of the gems that your app depends
 on so that they can be included in the jar.  More info on this a bit later.
 
-The service is defined in `src/clojure/puppetlabs/trapperkeeper/services/rack_jetty_service.clj`.
+The service is defined in
+`src/clojure/puppetlabs/trapperkeeper/services/rack_webserver/rack_wrapper_service.clj`
 
 You can find an example sinatra app in `test/clojure/examples/rack/rack_example.clj` and
 `test/ruby/hello-sinatra`.  To run the code:
@@ -32,7 +34,7 @@ You can find an example sinatra app in `test/clojure/examples/rack/rack_example.
     lein trampoline run --bootstrap-config ./test/clojure/examples/rack/bootstrap.cfg \
                         --config ./test/clojure/examples/rack/config.ini
 
-The `rack-webserver-service` could be useful in production and could be brought
+The `rack-wrapper-service` could be useful in production and could be brought
 up to production quality without too much effort.
 
 ### Using a ruby library to provide a trapperkeeper service
